@@ -1,16 +1,38 @@
 // Entire file updated to apply uniform attractive background styling across all sections
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { TypeAnimation } from 'react-type-animation'
 
+import emailjs from '@emailjs/browser' // ✅ EmailJS import
+
 export default function Home() {
   const [open, setOpen] = useState(false)
-  const [theme, setTheme] = useState('dark')
+  const form = useRef()
 
+  // ✅ Optional: Remove if you no longer want Light/Dark Mode
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-  }, [theme])
+    document.documentElement.classList.toggle('dark', false) // Force dark mode
+  }, [])
+
+  const sendEmail = (e) => {
+    e.preventDefault()
+
+    emailjs.sendForm(
+      'service_o0yeisg',        // ✅ Your service ID
+      'template_7176ud4',       // ✅ Your template ID
+      form.current,
+      '_WBtcVjstR31CuRih'       // ✅ Your public key
+    )
+    .then(() => {
+      alert('✅ Message sent successfully!')
+      form.current.reset()
+    })
+    .catch((error) => {
+      console.error('EmailJS error:', error)
+      alert('❌ Failed to send message. Please try again.')
+    })
+  }
 
   return (
     <main className="font-[--font-inter] scroll-smooth min-h-screen bg-gradient-to-br from-black via-[#0f172a] to-[#1e293b] text-white">
@@ -36,12 +58,7 @@ export default function Home() {
                 </motion.a>
               ))}
             </div>
-            <button
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="bg-gray-100 text-gray-800 px-3 py-1 rounded text-sm"
-            >
-              {theme === 'light' ? ' Dark Mode' : ' Light Mode'}
-            </button>
+            
             <button className="md:hidden" onClick={() => setOpen(!open)}>☰</button>
           </div>
         </div>
@@ -465,11 +482,10 @@ export default function Home() {
         </div>
         <div className="flex gap-4 mt-4">
           <a
-            href="https://github.com/your-github" target="_blank"
-            className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition"
-          >
-            GitHub
-          </a>
+            href="https://github.com/your-username" target="_blank" rel="noopener noreferrer"
+  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+  GitHub
+</a>
           <a
             href="https://linkedin.com/in/penumudi-eshwar-sai-balaji-795407233" target="_blank"
             className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition"
@@ -480,57 +496,58 @@ export default function Home() {
       </div>
 
       {/* Contact Form */}
-      <form
-        action="https://formspree.io/f/yourFormId"  // 🔁 Replace with your actual Formspree or backend URL
-        method="POST"
-        className="bg-[#1e293b] border border-purple-600 rounded-xl p-8 shadow-md space-y-6"
-      >
-        <div>
-          <label htmlFor="name" className="block text-sm font-semibold text-gray-300 mb-1">
-            Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            required
-            placeholder="Enter your name"
-            className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
+      {/* Contact Form */}
+<form
+  ref={form}
+  onSubmit={sendEmail}
+  className="bg-[#1e293b] border border-purple-600 rounded-xl p-8 shadow-md space-y-6"
+>
+  <div>
+    <label htmlFor="name" className="block text-sm font-semibold text-gray-300 mb-1">
+      Name
+    </label>
+    <input
+      type="text"
+      name="user_name"
+      required
+      placeholder="Enter your name"
+      className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
+    />
+  </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-300 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="example@gmail.com"
-            className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
+  <div>
+    <label htmlFor="email" className="block text-sm font-semibold text-gray-300 mb-1">
+      Email
+    </label>
+    <input
+      type="email"
+      name="user_email"
+      required
+      placeholder="example@gmail.com"
+      className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
+    />
+  </div>
 
-        <div>
-          <label htmlFor="message" className="block text-sm font-semibold text-gray-300 mb-1">
-            Message
-          </label>
-          <textarea
-            name="message"
-            rows="4"
-            required
-            placeholder="Write your message here..."
-            className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
+  <div>
+    <label htmlFor="message" className="block text-sm font-semibold text-gray-300 mb-1">
+      Message
+    </label>
+    <textarea
+      name="message"
+      rows="4"
+      required
+      placeholder="Write your message here..."
+      className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-pink-500"
+    />
+  </div>
 
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white px-6 py-2 rounded-md shadow-md transition"
-        >
-          Send Message ✉️
-        </button>
-      </form>
+  <button
+    type="submit"
+    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white px-6 py-2 rounded-md shadow-md transition"
+  >
+    Send Message ✉️
+  </button>
+</form>
     </div>
   </div>
 </section>
